@@ -11,15 +11,6 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 from matplotlib.ticker import PercentFormatter
 
-DATA_DIR = "./src/"
-TRAIN_PATH = "DIV2K_train_HR"
-TEST_PATH = "DIV2K_valid_HR"
-
-N_TRAIN_DATA = 800
-N_TEST_DATA = 100
-BATCH_SIZE = 50
-EPOCHS = 10
-
 
 # ========================================================================================================================================================================================================
 # Defining a specific layer for handling data augmentation
@@ -84,13 +75,13 @@ model.summary()
 # Training the Model
 # ========================================================================================================================================================================================================
 # Compile and train the model
-model.compile(loss="mean_squared_error", optimizer="adam", metrics=[psnr])
+model.compile(loss="mean_squared_error", optimizer="adam", metrics=['accuracy'])
 history = model.fit(
     train_x, 
     train_y,
     validation_data=(test_x, test_y),
-    steps_per_epoch=N_TRAIN_DATA // BATCH_SIZE,
-    epochs=EPOCHS
+    steps_per_epoch=19,
+    epochs=10
 )
 # Saving the trained model (needs to be converted to an onnx format to be compatable with Unity/Barracuda
 model.save('./SRCNNModel')
