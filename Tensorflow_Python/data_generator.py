@@ -32,19 +32,3 @@ def train_data_generator(
     ):
         x = np.array([drop_resolution(img, scale) for img in imgs])
         yield x / 255.0, imgs / 255.0
-
-
-def test_data_generator(
-    data_dir, mode, scale, target_size=(256, 256), batch_size=32, shuffle=True
-):
-    for imgs in ImageDataGenerator().flow_from_directory(
-        directory=data_dir,
-        classes=[mode],
-        class_mode=None,
-        color_mode="rgb",
-        target_size=target_size,
-        batch_size=batch_size,
-        shuffle=shuffle,
-    ):
-        x = np.array([drop_resolution(img, scale) for img in imgs])
-        yield x / 255.0, imgs / 255.0

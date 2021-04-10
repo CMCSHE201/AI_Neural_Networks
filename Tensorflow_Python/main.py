@@ -1,7 +1,8 @@
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
+from tensorflow.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array
 
-from data_generator import train_data_generator, test_data_generator
+import numpy as np
 from utils import psnr
 
 import matplotlib.pyplot as plt
@@ -21,10 +22,25 @@ EPOCHS = 10
 # ========================================================================================================================================================================================================
 # Defining a specific layer for handling data augmentation
 # ========================================================================================================================================================================================================
-train_data_generator = train_data_generator(
-    DATA_DIR, TRAIN_PATH, scale=4.0, batch_size=BATCH_SIZE
-)
+def test_data_generator(
+    data_dir, mode, target_size=(256, 256), batch_size=32, shuffle=True
+):
+    for imgs in ImageDataGenerator().flow_from_directory(
+        directory=data_dir,
+        classes=[mode],
+        class_mode=None,
+        color_mode="rgb",
+        target_size=target_size,
+        batch_size=batch_size,
+        shuffle=shuffle,
+    ):
+        yield imgs / 255.0
 
+train_x, train_y = next(
+    train_data_generator(
+        DATA_DIR, TRAIN_PATH, scale=4.0, batch_size=BATCH_SIZE, shuffle=False
+    )
+)
 test_x, test_y = next(
     test_data_generator(
         DATA_DIR, TEST_PATH, scale=4.0, batch_size=N_TEST_DATA, shuffle=False

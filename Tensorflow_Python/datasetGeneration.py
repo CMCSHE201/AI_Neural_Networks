@@ -1,44 +1,47 @@
+import PIL
 from PIL import Image
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import numpy as np
 import os
+from tensorflow.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array
 
-# The batch size we'll use for training
-batch_size = 64
 
-# Size of the image required to train our model
-img_size = 1024
+def test_data_generator(
+    data_dir, mode, target_size=(256, 256), batch_size=32, shuffle=True
+):
+    for imgs in ImageDataGenerator().flow_from_directory(
+        directory=data_dir,
+        classes=[mode],
+        class_mode=None,
+        color_mode="rgb",
+        target_size=target_size,
+        batch_size=batch_size,
+        shuffle=shuffle,
+    ):
+        yield imgs / 255.0
 
-# These many images will be used from the data archive
-dataset_split = 2500
+def createDataset(imageSet_a, imageSet_b):
+        yield imageSet_a, imageSet_b
 
-loadedNormalImages = [] # Container for storing the loaded normal images
-# Loading the normal images
-normal_dir = 'stone_normal'
-for image_file in os.listdir( normal_dir )[ 0 : dataset_split ]:
-    normal_image = Image.open( os.path.join( normal_dir , image_file ) ).resize( ( img_size , img_size ) )
-    # Normalize the RGB image array
-    normal_img_array = (np.asarray( normal_image ) ) / 255
-    # Append both the image arrays
-    loadedNormalImages.append( normal_img_array )
+loadedImages = next(
+    test_data_generator(
+        "./", "Images", batch_size=96, shuffle=False
+    )
+)
+loadedPixelart = next(
+    test_data_generator(
+        "./", "Images", batch_size=96, shuffle=False
+    )
+)
 
-    
-loadedPixelImages = [] # Container for storing the loaded pixelart images
-pixel_dir = 'stone_pixel'
-for image_file in os.listdir( pixel_dir )[ 0 : dataset_split ]:
-    pixel_image = Image.open( os.path.join( pixel_dir , image_file ) ).resize( ( img_size , img_size ) )
-    # Normalize the RGB image array
-    pixel_img_array = (np.asarray( pixel_image ) ) / 255
-    # Append both the image arrays
-    loadedPixelImages.append( pixel_img_array )
+train_x, train_y = next(
+    createDataset(
+        loadedImages, loadedPixelart
+    )
+)
 
-# Train-test splitting
-train_x, test_x, train_y, test_y = train_test_split( np.array(loadedNormalImages) , np.array(loadedPixelImages) , test_size=0.1 )
-
-# Construct tf.data.Dataset object
-dataset = tf.data.Dataset.from_tensor_slices( ( train_x , train_y ) )
-dataset = dataset.batch( batch_size )
-
-print(len(loadedNormalImages))
-print(len(loadedPixelImages))
+print(str(len(loadedImages)))
+print(str(len(loadedPixelart)))
+print(str(len(train_x)))
+print(str(len(train_y)))
