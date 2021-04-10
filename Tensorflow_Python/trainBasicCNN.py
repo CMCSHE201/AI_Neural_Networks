@@ -1,4 +1,5 @@
 import tensorflow as tf
+import tensorflow_datasets as tfds
 from tensorflow.keras import datasets, layers, models
 
 import matplotlib.pyplot as plt
@@ -27,33 +28,35 @@ data_augmentation = tf.keras.Sequential([
 ])
 
 
-# Building the Neural Network
-model = tf.keras.Sequential([
-    #resize_and_rescale,
-    data_augmentation,
-# Create the convolutional base
-    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)),
-    layers.MaxPooling2D((2, 2)),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.Dropout(0.2),
-    layers.MaxPooling2D((2, 2)),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.Dropout(0.2),
-# Add Dense layers on top
-    layers.Flatten(),
-    layers.Dense(8),
-    layers.Activation('relu'),
-    layers.Dropout(0.1),
-    layers.Dense(8),
-    layers.Activation('relu'),
-    layers.Dropout(0.1),
-    layers.Dense(10, activation='softmax')
-])
-
+# Creating neural network
+inputs = tf.keras.Input(shape=(32, 32, 3))
+# Data Augmentation
+x = data_augmentation(inputs)
+# Convolutional Base
+x = layers.Conv2D(32, (3, 3), activation='relu')(x)
+x = layers.MaxPooling2D((2, 2))(x)
+x = layers.Conv2D(64, (3, 3), activation='relu')(x)
+x = layers.Dropout(0.2)(x)
+x = layers.MaxPooling2D((2, 2))(x)
+x = layers.Conv2D(64, (3, 3), activation='relu')(x)
+x = layers.Dropout(0.2)(x)
+# Dense Layers
+x = layers.Flatten()(x)
+x = layers.Dense(8)(x)
+x = layers.Activation('relu')(x)
+x = layers.Dropout(0.1)(x)
+x = layers.Dense(8)(x)
+x = layers.Activation('relu')(x)
+x = layers.Dropout(0.1)(x)
+outputs = layers.Dense(10, activation='softmax')(x)
+model = tf.keras.Model(inputs, outputs)
 
 # Compile and train the model
-model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=['accuracy'])
-history = model.fit(train_images, train_labels, batch_size=5000, epochs=500, validation_data=(test_images, test_labels))
+model.compile(
+    optimizer='adam', 
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), 
+    metrics=['accuracy'])
+history = model.fit(train_images, train_labels, batch_size=5000, epochs=25, validation_data=(test_images, test_labels))
 
 
 # Displaying the model architecture
