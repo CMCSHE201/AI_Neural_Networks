@@ -5,6 +5,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator, array_to_im
 import numpy as np
 from utils import psnr
 
+from sklearn.model_selection import train_test_split
+
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 from matplotlib.ticker import PercentFormatter
@@ -22,7 +24,7 @@ EPOCHS = 10
 # ========================================================================================================================================================================================================
 # Defining a specific layer for handling data augmentation
 # ========================================================================================================================================================================================================
-def test_data_generator(
+def loadImageSet(
     data_dir, mode, target_size=(256, 256), batch_size=32, shuffle=True
 ):
     for imgs in ImageDataGenerator().flow_from_directory(
@@ -36,16 +38,16 @@ def test_data_generator(
     ):
         yield imgs / 255.0
 
-train_x, train_y = next(
-    train_data_generator(
-        DATA_DIR, TRAIN_PATH, scale=4.0, batch_size=BATCH_SIZE, shuffle=False
+loadedPixelart = next(
+    loadImageSet(
+        "./", "images_pixel", target_size=(128,128), batch_size=95, shuffle=False)
     )
-)
-test_x, test_y = next(
-    test_data_generator(
-        DATA_DIR, TEST_PATH, scale=4.0, batch_size=N_TEST_DATA, shuffle=False
+loadedImages = next(
+    loadImageSet(
+        "./", "images_normal", target_size=(1024,1024), batch_size=95, shuffle=False)
     )
-)
+
+train_x, test_x, train_y, test_y = train_test_split( np.array(loadedPixelart) , np.array(loadedImages) , test_size=0.1 )
 
 
 # ========================================================================================================================================================================================================
@@ -67,7 +69,12 @@ x = data_augmentation(inputs)
 # Convolutional Base
 x = layers.Conv2D(filters=64, kernel_size=9, activation="relu", padding="same", input_shape=(None,None,3),)(x)
 x = layers.Conv2D(filters=32, kernel_size=5, activation="relu", padding="same")(x)
-outputs = layers.Conv2D(filters=3, kernel_size=5, padding="same")(x)
+x = layers.Conv2D(filters=3, kernel_size=5, padding="same")(x)
+
+# Upsampling
+x = layers.UpSampling2D((2, 2))(x)
+x = layers.UpSampling2D((2, 2))(x)
+outputs = layers.UpSampling2D((2, 2))(x)
 model = tf.keras.Model(inputs, outputs)
 # Displaying the model architecture
 model.summary()
@@ -79,7 +86,8 @@ model.summary()
 # Compile and train the model
 model.compile(loss="mean_squared_error", optimizer="adam", metrics=[psnr])
 history = model.fit(
-    train_data_generator,
+    train_x, 
+    train_y,
     validation_data=(test_x, test_y),
     steps_per_epoch=N_TRAIN_DATA // BATCH_SIZE,
     epochs=EPOCHS
