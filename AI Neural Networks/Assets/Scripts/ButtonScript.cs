@@ -8,11 +8,15 @@ using UnityEngine.UI;
 
 public class ButtonScript : MonoBehaviour
 {
-
     string path = "";
     public RawImage rawImage;
-    public Texture myTexture = null;
+    public RawImage rawResultingImage;
+    public Texture2D myTexture = null;
+    public Texture2D myResultingTexture = null;
     public Text errorText;
+
+    public int resWidth = 2550;
+    public int resHeight = 3300;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +45,10 @@ public class ButtonScript : MonoBehaviour
         {
             errorText.gameObject.SetActive(true);
         }
+        else
+        {
+            ExportPicture(myResultingTexture);
+        }
     }
 
     IEnumerator DisplayTexture()
@@ -56,12 +64,31 @@ public class ButtonScript : MonoBehaviour
         else
         {
             myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            myResultingTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
             rawImage.texture = myTexture;
+            rawResultingImage.texture = myResultingTexture;
         }
     }
 
     public Texture GetTexture()
     {
         return myTexture;
+    }
+
+    public void ExportPicture(Texture2D t)
+    {
+        Texture2D exTexture = new Texture2D(t.width, t.height, TextureFormat.RGBA32, false);
+        exTexture.SetPixels(t.GetPixels());
+        string fileName = TextureName(resWidth, resHeight);
+        //string exportName = "Results" + "\\" + fileName;
+        System.IO.File.WriteAllBytes(fileName, exTexture.EncodeToPNG());
+    }
+
+    public static string TextureName(int width, int height)
+    {
+        return string.Format("{0}/Results/texture_{1}x{2}_{3}.png",
+                             Application.dataPath,
+                             width, height,
+                             System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
     }
 }
