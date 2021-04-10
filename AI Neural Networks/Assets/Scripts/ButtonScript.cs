@@ -5,12 +5,13 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEditor.UI;
 using UnityEngine.UI;
+using System;
 
 public class ButtonScript : MonoBehaviour
 {
     string path = "";
-    public RawImage rawImage;
-    public RawImage rawResultingImage;
+    public RawImage rawImage = null;
+    public RawImage rawResultingImage = null;
     public Texture2D myTexture = null;
     public Texture2D myResultingTexture = null;
     public Text errorText;
@@ -30,7 +31,7 @@ public class ButtonScript : MonoBehaviour
 
     }
 
-    public void OnButtonClick()
+    public void OnStartClick()
     {
         errorText.gameObject.SetActive(false);
 
@@ -39,10 +40,24 @@ public class ButtonScript : MonoBehaviour
         StartCoroutine(DisplayTexture());
     }
 
-    public void OnButtonClick2()
+    public void OnLoadClick()
     {
         if (GetTexture() == null)
         {
+            errorText.text = "Error(Code: 44712): Select Image First";
+            errorText.gameObject.SetActive(true);
+        }
+        else
+        {
+            //Run Network
+        }
+    }
+
+    public void OnExportClick()
+    {
+        if (myResultingTexture == null)
+        {
+            errorText.text = "Error(Code:71424): No resulting image to export.";
             errorText.gameObject.SetActive(true);
         }
         else
@@ -86,8 +101,8 @@ public class ButtonScript : MonoBehaviour
 
     public static string TextureName(int width, int height)
     {
-        return string.Format("{0}/Results/texture_{1}x{2}_{3}.png",
-                             Application.dataPath,
+        return string.Format("{0}/texture_{1}x{2}_{3}.png",
+                             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                              width, height,
                              System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
     }
