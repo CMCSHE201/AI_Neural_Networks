@@ -42,12 +42,12 @@ public class CnnTester : MonoBehaviour
         BarracudaTextureUtils.TensorToRenderTexture(output, outputTexture);
         RenderTexture currentRT = RenderTexture.active;
         RenderTexture.active = outputTexture;
+
         finalTexture = new Texture2D(outputTexture.width, outputTexture.height, TextureFormat.RGBA32, false);
         finalTexture.ReadPixels(new Rect(0, 0, outputTexture.width, outputTexture.height), 0, 0, false);
         finalTexture.Apply();
         
         RenderTexture.active = currentRT;
-        //outputImage.sprite = Sprite.Create(finalTexture, new Rect(0, 0, finalTexture.width, finalTexture.height), new Vector2(0.5f, 0.5f));
         outputImage.sprite = Sprite.Create(finalTexture, new Rect(0, 0, finalTexture.width, finalTexture.height), new Vector2(0.5f, 0.5f));
 
         input.Dispose();

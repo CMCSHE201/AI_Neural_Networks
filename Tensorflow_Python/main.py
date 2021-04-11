@@ -15,14 +15,16 @@ from matplotlib.ticker import PercentFormatter
 
 
 # ========================================================================================================================================================================================================
-# Defining a specific layer for handling data augmentation
+# Creating network datasets
 # ========================================================================================================================================================================================================
+# Loading images from directorys
 def loadImageSet(
     data_dir, mode, target_size=(1024, 1024), batch_size=5, shuffle=False
 ):
     datagen = ImageDataGenerator()
     gen = datagen.flow_from_directory(
         directory=data_dir,
+        classes=[mode],
         class_mode=None,
         color_mode="rgb",
         target_size=target_size,
@@ -31,29 +33,28 @@ def loadImageSet(
     for imgs in gen:
         yield imgs / 255.0
 
-print(os.listdir("./pixelImages/images_pixel"))
+print(os.listdir("./images_pixel"))
 loadedPixelart = next(
     loadImageSet(
-        "./pixelImages/", "images_pixel", target_size=(1024,1024), batch_size=95, shuffle=False)
+        "./", "images_pixel", target_size=(128,128), batch_size=291, shuffle=False)
     )
-print(os.listdir("./normalImages/images_normal"))
+print(os.listdir("./images_normal"))
 loadedImages = next(
     loadImageSet(
-        "./normalImages/", "images_normal", target_size=(1024,1024), batch_size=95, shuffle=False)
+        "./", "images_normal", target_size=(1024,1024), batch_size=291, shuffle=False)
     )
-
+# Splitting loaded image sets into training datasets and test datasets
 train_x, test_x, train_y, test_y = train_test_split( np.array(loadedPixelart) , np.array(loadedImages) , test_size=0.1 )
-
+# Showing first 9 elements in each image set to show that the images are indexed/ accossiated properly
 plt.figure(figsize=(10, 10))
 for i in range(9):
   ax = plt.subplot(3, 3, i + 1)
-  plt.imshow(loadedPixelart[i])
+  plt.imshow(train_x[i])
   plt.axis("off")
-    
 plt.figure(figsize=(10, 10))
 for j in range(9):
   ax = plt.subplot(3, 3, j + 1)
-  plt.imshow(loadedImages[j])
+  plt.imshow(train_y[j])
   plt.axis("off")
 plt.show()
 
@@ -74,8 +75,11 @@ inputs = tf.keras.Input(shape=(None, None, 3))
 # Data Augmentation
 x = data_augmentation(inputs)
 # Convolutional Base
+x = layers.UpSampling2D((2,2))(x)
 x = layers.Conv2D(filters=32, kernel_size=6, activation="relu", padding="same")(x)
+x = layers.UpSampling2D((2,2))(x)
 x = layers.Conv2D(filters=16, kernel_size=1, activation="relu", padding="same")(x)
+x = layers.UpSampling2D((2,2))(x)
 outputs = layers.Conv2D(filters=3, kernel_size=3, padding="same")(x)
 model = tf.keras.Model(inputs, outputs)
 # Displaying the model architecture
@@ -86,13 +90,13 @@ model.summary()
 # Training the Model
 # ========================================================================================================================================================================================================
 # Compile and train the model
-model.compile(loss="mean_squared_error", optimizer="adam", metrics=[psnr])
+model.compile(loss="mean_squared_error", optimizer="adam", metrics=[psnr, 'accuracy'])
 history = model.fit(
     loadedPixelart, 
     loadedImages,
     validation_data=(test_x, test_y),
-    batch_size=5,
-    epochs=25
+    batch_size=1,
+    epochs=1
 )
 # Saving the trained model (needs to be converted to an onnx format to be compatable with Unity/Barracuda
 model.save('./SRCNNModel')
