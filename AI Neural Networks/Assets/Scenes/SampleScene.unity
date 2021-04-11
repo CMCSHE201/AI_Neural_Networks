@@ -155,8 +155,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -87.5, y: 25}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: -350, y: 100}
+  m_SizeDelta: {x: 600, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &49744782
 MonoBehaviour:
@@ -177,7 +177,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7722bd28f4f6ab44f9080b2e7b5d1843, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3dff61c4434c5834db7813490864e587, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -231,8 +231,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
-  m_SizeDelta: {x: 300, y: 30}
+  m_AnchoredPosition: {x: 0, y: -402.8}
+  m_SizeDelta: {x: 750, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &79287909
 MonoBehaviour:
@@ -373,10 +373,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -635,8 +635,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 87.5, y: 25}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: 350, y: 100}
+  m_SizeDelta: {x: 600, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1258381532
 MonoBehaviour:
@@ -799,11 +799,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 90
     m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 9
+    m_MaxSize: 90
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -848,8 +848,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4ddb4ba750d5714f85cbeeaafd698c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  catTestSprite: {fileID: 2800000, guid: 7722bd28f4f6ab44f9080b2e7b5d1843, type: 3}
-  modelAsset: {fileID: 5022602860645237092, guid: f9437498f4f5b7b43a3f0307aaab95d8,
+  catTestSprite: {fileID: 2800000, guid: 3dff61c4434c5834db7813490864e587, type: 3}
+  modelAsset: {fileID: 5022602860645237092, guid: dfe7587301489fe46bc9c8b8edbe3581,
     type: 3}
   outputImage: {fileID: 1258381532}
   text: {fileID: 1794053141}
