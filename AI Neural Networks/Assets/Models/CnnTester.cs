@@ -13,7 +13,20 @@ public class CnnTester : MonoBehaviour
     public Texture2D testInput;
     public Texture2D testOutput;
 
+    public int imageCounter = 0;
+
+    public Sprite[] testImages;
+    public Texture2D[] testImages2D;
+
+    public Image inputImage;
     public Image testImage;
+
+    private void Update()
+    {
+        testInput = testImages2D[imageCounter];
+
+        inputImage.sprite = testImages[imageCounter];
+    }
 
     public void Test()
     {
@@ -83,5 +96,19 @@ public class CnnTester : MonoBehaviour
             }
         }
         return newTexture;
+    }
+
+    public void changeInput(int value)
+    {
+        imageCounter += value;
+
+        if (imageCounter > (testImages.Count() - 1))
+        {
+            imageCounter = 0;
+        }
+        else if (imageCounter < 0)
+        {
+            imageCounter = (testImages.Count() - 1);
+        }
     }
 }
