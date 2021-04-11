@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class CnnTester : MonoBehaviour
 {
-    public Texture2D catTestSprite;
+    public Texture2D inputTexture;
     public NNModel modelAsset;
     private Model runtimeCNN;
 
@@ -17,7 +17,6 @@ public class CnnTester : MonoBehaviour
     public Text text;
     public RenderTexture outputTexture;
     public Texture2D finalTexture;
-    public Texture2D alteredTexture;
 
     public void AnalyseImage()
     {
@@ -25,7 +24,7 @@ public class CnnTester : MonoBehaviour
 
         var worker = WorkerFactory.CreateWorker(runtimeCNN);
 
-        Tensor input = new Tensor(catTestSprite, 3);
+        Tensor input = new Tensor(inputTexture, 3);
 
         worker.Execute(input);
 

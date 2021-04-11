@@ -177,7 +177,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3dff61c4434c5834db7813490864e587, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 56688394febe00c4aa53044cfd317775, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -848,13 +848,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4ddb4ba750d5714f85cbeeaafd698c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  catTestSprite: {fileID: 2800000, guid: 3dff61c4434c5834db7813490864e587, type: 3}
-  modelAsset: {fileID: 5022602860645237092, guid: dfe7587301489fe46bc9c8b8edbe3581,
+  catTestSprite: {fileID: 2800000, guid: 56688394febe00c4aa53044cfd317775, type: 3}
+  modelAsset: {fileID: 5022602860645237092, guid: 5c3b623c014ed1241b9bbba002df206d,
     type: 3}
   outputImage: {fileID: 1258381532}
   text: {fileID: 1794053141}
   outputTexture: {fileID: 0}
   finalTexture: {fileID: 0}
+  alteredTexture: {fileID: 0}
 --- !u!4 &2086969305
 Transform:
   m_ObjectHideFlags: 0
