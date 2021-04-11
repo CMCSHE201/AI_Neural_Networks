@@ -7,24 +7,25 @@ using UnityEngine.UI;
 
 public class CnnTester : MonoBehaviour
 {
-    public Texture2D inputTexture;
     public NNModel modelAsset;
     private Model runtimeCNN;
 
     private string[] identifiers = new string[] { "airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck" };
 
-    public Image outputImage;
-    public Text text;
+    public RawImage outputImage;
     public RenderTexture outputTexture;
     public Texture2D finalTexture;
+    public Texture2D alteredTexture;
 
-    public void AnalyseImage()
+
+
+    public void AnalyseImage(Texture2D texture)
     {
         runtimeCNN = ModelLoader.Load(modelAsset);
 
         var worker = WorkerFactory.CreateWorker(runtimeCNN);
 
-        Tensor input = new Tensor(inputTexture, 3);
+        Tensor input = new Tensor(texture, 3);
 
         worker.Execute(input);
 
@@ -48,7 +49,8 @@ public class CnnTester : MonoBehaviour
         
         RenderTexture.active = currentRT;
         //outputImage.sprite = Sprite.Create(finalTexture, new Rect(0, 0, finalTexture.width, finalTexture.height), new Vector2(0.5f, 0.5f));
-        outputImage.sprite = Sprite.Create(finalTexture, new Rect(0, 0, finalTexture.width, finalTexture.height), new Vector2(0.5f, 0.5f));
+        //outputImage.sprite = Sprite.Create(finalTexture, new Rect(0, 0, finalTexture.width, finalTexture.height), new Vector2(0.5f, 0.5f));
+        outputImage.texture = finalTexture;
 
         input.Dispose();
         output.Dispose();
