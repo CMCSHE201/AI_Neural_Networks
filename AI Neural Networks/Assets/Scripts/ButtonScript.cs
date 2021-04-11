@@ -47,12 +47,16 @@ public class ButtonScript : MonoBehaviour
         }
         else
         {
-            Texture2D input = new Texture2D(myTexture.width, myTexture.height, myTexture.format, 1, true);
-            Graphics.CopyTexture(myTexture, input);
+            Texture2D input = cnnTester.CopyFromTexture2D(myTexture);
+            input.Apply();
+
+            Debug.Log("Starting NN Upscaling");
 
             RenderTexture transformedTexture = new RenderTexture(1024, 1024, 0);
             transformedTexture = cnnTester.AnalyseImage(input);
             myResultingTexture = cnnTester.RenderTexturetoTexture2D(transformedTexture);
+
+            Debug.Log("Finished NN Upscaling");
         }
     }
 
@@ -81,10 +85,7 @@ public class ButtonScript : MonoBehaviour
         }
         else
         {
-            Texture2D tempTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-            Graphics.CopyTexture(tempTexture, myTexture);
-            myTexture.Apply();
-
+            myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
             rawImage.texture = myTexture;
         }
     }

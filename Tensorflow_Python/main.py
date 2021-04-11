@@ -71,7 +71,7 @@ layers.experimental.preprocessing.RandomFlip("vertical")
 # ========================================================================================================================================================================================================
 # Defining the Neural Network
 # ========================================================================================================================================================================================================
-inputs = tf.keras.Input(shape=(None, None, 3))
+inputs = tf.keras.Input(shape=(128, 128, 3))
 # Data Augmentation
 x = data_augmentation(inputs)
 # Convolutional Base
@@ -90,13 +90,13 @@ model.summary()
 # Training the Model
 # ========================================================================================================================================================================================================
 # Compile and train the model
-model.compile(loss="mean_squared_error", optimizer="adam", metrics=[psnr, 'accuracy'])
+model.compile(loss="mean_squared_error", optimizer="adam", metrics=['mean_squared_error'])
 history = model.fit(
     loadedPixelart, 
     loadedImages,
     validation_data=(test_x, test_y),
     batch_size=1,
-    epochs=1
+    epochs=10
 )
 # Saving the trained model (needs to be converted to an onnx format to be compatable with Unity/Barracuda
 model.save('./SRCNNModel')
@@ -108,10 +108,10 @@ print("Model Saved to: " + os.path.dirname(os.path.realpath('./SRCNNModel')) + "
 # ========================================================================================================================================================================================================
 # Creating graph to show model's accuracy & valuation accuracy per epoch    
 plot3 = plt.figure(3)
-plt.plot(history.history['psnr'], label='psnr')
-plt.plot(history.history['val_psnr'], label = 'val_psnr')
+plt.plot(history.history['mean_squared_error'], label='mean_squared_error')
+plt.plot(history.history['val_mean_squared_error'], label = 'val_mean_squared_error')
 plt.xlabel('Epoch')
-plt.ylabel('psnr')
+plt.ylabel('mean_squared_error')
 plt.legend(loc='lower right')
 
 # Printing out final model accuracy

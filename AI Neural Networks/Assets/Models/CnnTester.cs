@@ -70,4 +70,18 @@ public class CnnTester : MonoBehaviour
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
         return sprite;
     }
+
+    public Texture2D CopyFromTexture2D(Texture2D texture)
+    {
+        Texture2D newTexture = new Texture2D(texture.width, texture.height);
+        for (int j = 0; j < texture.height; j++)
+        {
+            for (int i = 0; i < texture.width; i++)
+            {
+                Color c = texture.GetPixel(i, j);
+                newTexture.SetPixel(i, j, c);
+            }
+        }
+        return newTexture;
+    }
 }
