@@ -11,7 +11,8 @@ public class ButtonScript : MonoBehaviour
     string path = "";
     public RawImage rawImage = null;
     public RawImage ResultingImage = null;
-    public Texture2D myTexture = null;
+    public Texture myTexture = null;
+    public Texture2D myTexture2D = null;
     public Texture2D myResultingTexture = null;
     public Text errorText;
 
@@ -47,7 +48,7 @@ public class ButtonScript : MonoBehaviour
         }
         else
         {
-            Texture2D input = cnnTester.CopyFromTexture2D(myTexture);
+            /*Texture2D input = cnnTester.CopyFromTexture2D(myTexture);
             input.Apply();
 
             Debug.Log("Starting NN Upscaling");
@@ -56,7 +57,8 @@ public class ButtonScript : MonoBehaviour
             transformedTexture = cnnTester.AnalyseImage(input);
             myResultingTexture = cnnTester.RenderTexturetoTexture2D(transformedTexture);
 
-            Debug.Log("Finished NN Upscaling");
+            Debug.Log("Finished NN Upscaling");*/
+            //cnnTester.GetComponent<CnnTester>().AnalyseImage(GetTexture());
         }
     }
 
@@ -86,6 +88,9 @@ public class ButtonScript : MonoBehaviour
         else
         {
             myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+
+            myTexture2D = (Texture2D)myTexture;
+
             rawImage.texture = myTexture;
         }
     }
@@ -116,7 +121,7 @@ public class ButtonScript : MonoBehaviour
         }
     }
 
-    public Texture2D GetTexture()
+    public Texture GetTexture()
     {
         return myTexture;
     }
