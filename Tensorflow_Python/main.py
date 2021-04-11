@@ -6,6 +6,7 @@ import numpy as np
 from utils import psnr
 
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 from sklearn.model_selection import train_test_split
 
@@ -47,13 +48,13 @@ loadedImages = next(
 train_x, test_x, train_y, test_y = train_test_split( np.array(loadedPixelart) , np.array(loadedImages) , test_size=0.1 )
 # Showing first 9 elements in each image set to show that the images are indexed/ accossiated properly
 plt.figure(figsize=(10, 10))
-for i in range(9):
-  ax = plt.subplot(3, 3, i + 1)
+for i in range(4):
+  ax = plt.subplot(2, 2, i + 1)
   plt.imshow(train_x[i])
   plt.axis("off")
 plt.figure(figsize=(10, 10))
-for j in range(9):
-  ax = plt.subplot(3, 3, j + 1)
+for j in range(4):
+  ax = plt.subplot(2, 2, j + 1)
   plt.imshow(train_y[j])
   plt.axis("off")
 plt.show()
@@ -76,11 +77,11 @@ inputs = tf.keras.Input(shape=(128, 128, 3))
 x = data_augmentation(inputs)
 # Convolutional Base
 x = layers.UpSampling2D((2,2))(x)
-x = layers.Conv2D(filters=64, kernel_size=9, activation="relu", padding="same")(x)
 x = layers.UpSampling2D((2,2))(x)
-x = layers.Conv2D(filters=32, kernel_size=1, activation="relu", padding="same")(x)
 x = layers.UpSampling2D((2,2))(x)
-outputs = layers.Conv2D(filters=3, kernel_size=5, padding="same")(x)
+x = layers.Conv2D(filters=32, kernel_size=6, activation="relu", padding="same")(x)
+x = layers.Conv2D(filters=16, kernel_size=1, activation="relu", padding="same")(x)
+outputs = layers.Conv2D(filters=3, kernel_size=3, padding="same")(x)
 model = tf.keras.Model(inputs, outputs)
 # Displaying the model architecture
 model.summary()
@@ -90,7 +91,7 @@ model.summary()
 # Training the Model
 # ========================================================================================================================================================================================================
 # Compile and train the model
-model.compile(loss="mean_squared_error", optimizer="adam", metrics=['mean_squared_error'])
+model.compile(loss="mean_squared_error", optimizer="adam", metrics=['mean_squared_error', 'accuracy'])
 history = model.fit(
     loadedPixelart, 
     loadedImages,
@@ -108,6 +109,18 @@ print("Model Saved to: " + os.path.dirname(os.path.realpath('./SRCNNModel')) + "
 # ========================================================================================================================================================================================================
 # Creating graph to show model's accuracy & valuation accuracy per epoch    
 plot3 = plt.figure(3)
+plt.plot(history.history['accuracy'], label='accuracy')
+plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.ylim([0.0, 1])
+# Formatting Graph Y Axis to show units as a percentage
+yTicks = mtick.PercentFormatter(1, None, '%', False)
+axes = plt.gca()
+axes.yaxis.set_major_formatter(yTicks)
+plt.legend(loc='lower right')
+
+plot4 = plt.figure(4)
 plt.plot(history.history['mean_squared_error'], label='mean_squared_error')
 plt.plot(history.history['val_mean_squared_error'], label = 'val_mean_squared_error')
 plt.xlabel('Epoch')
