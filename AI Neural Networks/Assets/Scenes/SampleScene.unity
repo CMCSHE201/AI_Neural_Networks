@@ -974,7 +974,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4ddb4ba750d5714f85cbeeaafd698c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelAsset: {fileID: 5022602860645237092, guid: 9a1bfa7091b9a8847824604deb2784da,
+  modelAsset: {fileID: 5022602860645237092, guid: 6ec5428a903f2ea45ad2e73c83d3ed08,
     type: 3}
   testInput: {fileID: 2800000, guid: 56688394febe00c4aa53044cfd317775, type: 3}
   testOutput: {fileID: 0}
