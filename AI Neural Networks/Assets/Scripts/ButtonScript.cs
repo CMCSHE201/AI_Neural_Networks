@@ -27,7 +27,7 @@ public class ButtonScript : MonoBehaviour
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", ".jpg", ".png"));
         FileBrowser.SetDefaultFilter(".jpg");
 
-        errorText.gameObject.SetActive(false);
+        //errorText.gameObject.SetActive(false);
     }
 
     public void OnStartClick()
