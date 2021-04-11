@@ -6,15 +6,19 @@ using UnityEngine.Networking;
 using UnityEditor.UI;
 using UnityEngine.UI;
 using System;
+using SimpleFileBrowser;
+using System.IO;
 
 public class ButtonScript : MonoBehaviour
 {
     string path = "";
     public RawImage rawImage = null;
-    public RawImage rawResultingImage = null;
+    public RawImage ResultingImage = null;
     public Texture2D myTexture = null;
     public Texture2D myResultingTexture = null;
     public Text errorText;
+
+    public GameObject cnnTester;
 
     public int resWidth = 2550;
     public int resHeight = 3300;
@@ -22,22 +26,25 @@ public class ButtonScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Images", ".jpg", ".png"));
+        FileBrowser.SetDefaultFilter(".jpg");
+
         errorText.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        myResultingTexture = cnnTester.GetComponent<CnnTester>().finalTexture;
     }
 
     public void OnStartClick()
     {
         errorText.gameObject.SetActive(false);
 
-        path = EditorUtility.OpenFilePanel("Show all images (.png) ", "", "png");
+        //path = EditorUtility.OpenFilePanel("Show all images (.png) ", "", "png");
 
-        StartCoroutine(DisplayTexture());
+        StartCoroutine(ShowLoadDialogCoroutine());
     }
 
     public void OnLoadClick()
@@ -49,7 +56,7 @@ public class ButtonScript : MonoBehaviour
         }
         else
         {
-            //Run Network
+            cnnTester.GetComponent<CnnTester>().AnalyseImage(GetTexture());
         }
     }
 
@@ -79,13 +86,37 @@ public class ButtonScript : MonoBehaviour
         else
         {
             myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-            myResultingTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
             rawImage.texture = myTexture;
-            rawResultingImage.texture = myResultingTexture;
         }
     }
 
-    public Texture GetTexture()
+    IEnumerator ShowLoadDialogCoroutine()
+    {
+        // Show a load file dialog and wait for a response from user
+        // Load file/folder: both, Allow multiple selection: true
+        // Initial path: default (Documents), Initial filename: empty
+        // Title: "Load File", Submit button text: "Load"
+        yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders, true, null, null, "Load Files and Folders", "Load");
+
+        // Dialog is closed
+        // Print whether the user has selected some files/folders or cancelled the operation (FileBrowser.Success)
+        Debug.Log(FileBrowser.Success);
+
+        if (FileBrowser.Success)
+        {
+            // Print paths of the selected files (FileBrowser.Result) (null, if FileBrowser.Success is false)
+            for (int i = 0; i < FileBrowser.Result.Length; i++)
+                Debug.Log(FileBrowser.Result[i]);
+
+            // Or, copy the first file to persistentDataPath
+            path = Path.Combine(Application.persistentDataPath, FileBrowserHelpers.GetFilename(FileBrowser.Result[0]));
+            FileBrowserHelpers.CopyFile(FileBrowser.Result[0], path);
+
+            StartCoroutine(DisplayTexture());
+        }
+    }
+
+    public Texture2D GetTexture()
     {
         return myTexture;
     }
