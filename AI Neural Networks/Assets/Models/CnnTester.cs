@@ -10,16 +10,19 @@ public class CnnTester : MonoBehaviour
     public NNModel modelAsset;
     private Model runtimeCNN;
 
-    private string[] identifiers = new string[] { "airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck" };
+    public Texture2D testInput;
+    public Texture2D testOutput;
 
-    public RawImage outputImage;
-    public RenderTexture outputTexture;
-    public Texture2D finalTexture;
-    public Texture2D alteredTexture;
+    public Image testImage;
 
+    public void Test()
+    {
+        RenderTexture test = AnalyseImage(testInput);
+        testOutput = RenderTexturetoTexture2D(test);
+        testImage.sprite = Texture2DtoSprite(testOutput);
+    }
 
-
-    public void AnalyseImage(Texture2D texture)
+    public RenderTexture AnalyseImage(Texture2D texture)
     {
         runtimeCNN = ModelLoader.Load(modelAsset);
 
@@ -39,20 +42,32 @@ public class CnnTester : MonoBehaviour
         text.text = string.Format("Hey that's a {0}", identifiers[temp.IndexOf(answer)]);
         */
 
-        outputTexture = new RenderTexture(1024, 1024, 3);
+        RenderTexture outputTexture = new RenderTexture(1024, 1024, 3);
         BarracudaTextureUtils.TensorToRenderTexture(output, outputTexture);
-        RenderTexture currentRT = RenderTexture.active;
-        RenderTexture.active = outputTexture;
-        finalTexture = new Texture2D(outputTexture.width, outputTexture.height, TextureFormat.RGBA32, false);
-        finalTexture.ReadPixels(new Rect(0, 0, outputTexture.width, outputTexture.height), 0, 0, false);
-        finalTexture.Apply();
         
-        RenderTexture.active = currentRT;
-        //outputImage.sprite = Sprite.Create(finalTexture, new Rect(0, 0, finalTexture.width, finalTexture.height), new Vector2(0.5f, 0.5f));
-        //outputImage.sprite = Sprite.Create(finalTexture, new Rect(0, 0, finalTexture.width, finalTexture.height), new Vector2(0.5f, 0.5f));
-        outputImage.texture = finalTexture;
-
         input.Dispose();
         output.Dispose();
+
+        return outputTexture;
+    }
+
+    public Texture2D RenderTexturetoTexture2D(RenderTexture texture)
+    {
+        RenderTexture currentRT = RenderTexture.active;
+        RenderTexture.active = texture;
+
+        Texture2D finalTexture = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
+        finalTexture.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0, false);
+        finalTexture.Apply();
+
+        RenderTexture.active = currentRT;
+
+        return finalTexture;
+    }
+
+    public Sprite Texture2DtoSprite(Texture2D texture)
+    {
+        Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        return sprite;
     }
 }

@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using SimpleFileBrowser;
+using System;
+using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEditor.UI;
 using UnityEngine.UI;
-using System;
-using SimpleFileBrowser;
-using System.IO;
 
 public class ButtonScript : MonoBehaviour
 {
@@ -18,7 +15,7 @@ public class ButtonScript : MonoBehaviour
     public Texture2D myResultingTexture = null;
     public Text errorText;
 
-    public GameObject cnnTester;
+    public CnnTester cnnTester;
 
     public int resWidth = 2550;
     public int resHeight = 3300;
@@ -30,12 +27,6 @@ public class ButtonScript : MonoBehaviour
         FileBrowser.SetDefaultFilter(".jpg");
 
         errorText.gameObject.SetActive(false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        myResultingTexture = cnnTester.GetComponent<CnnTester>().finalTexture;
     }
 
     public void OnStartClick()
@@ -56,7 +47,12 @@ public class ButtonScript : MonoBehaviour
         }
         else
         {
-            cnnTester.GetComponent<CnnTester>().AnalyseImage(GetTexture());
+            Texture2D input = new Texture2D(myTexture.width, myTexture.height, myTexture.format, 1, true);
+            Graphics.CopyTexture(myTexture, input);
+
+            RenderTexture transformedTexture = new RenderTexture(1024, 1024, 0);
+            transformedTexture = cnnTester.AnalyseImage(input);
+            myResultingTexture = cnnTester.RenderTexturetoTexture2D(transformedTexture);
         }
     }
 
@@ -85,7 +81,10 @@ public class ButtonScript : MonoBehaviour
         }
         else
         {
-            myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            Texture2D tempTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            Graphics.CopyTexture(tempTexture, myTexture);
+            myTexture.Apply();
+
             rawImage.texture = myTexture;
         }
     }
